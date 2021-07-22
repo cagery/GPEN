@@ -1,4 +1,10 @@
-# GAN Prior Embedded Network for Blind Face Restoration in the Wild
+# Converting GPEN Model to ONNX to Utilize MIGraphX for Inference
+
+This fork provides conversion of GPEN model from PyTorch to ONNX. It also provides HIP kernels for AMD GPUs converted from CUDA kernels provided. <br>
+The original README is below.
+
+---
+## GAN Prior Embedded Network for Blind Face Restoration in the Wild
 
 [Paper](https://arxiv.org/abs/2105.06070) | [Supplementary](https://www4.comp.polyu.edu.hk/~cslzhang/paper/GPEN-cvpr21-supp.pdf) | [Demo](https://vision.aliyun.com/experience/detail?spm=a211p3.14020179.J_7524944390.17.66cd4850wVDkUQ&tagName=facebody&children=EnhanceFace)
 
@@ -6,21 +12,21 @@
 _<sup>1</sup>[DAMO Academy, Alibaba Group](https://damo.alibaba.com), Hangzhou, China_  
 _<sup>2</sup>[Department of Computing, The Hong Kong Polytechnic University](http://www.comp.polyu.edu.hk), Hong Kong, China_
 
-#### Face Restoration
+##### Face Restoration
 
 <img src="figs/real_00.png" width="390px"/> <img src="figs/real_01.png" width="390px"/>
 <img src="figs/real_02.png" width="390px"/> <img src="figs/real_03.png" width="390px"/>
 
 <img src="figs/Solvay_conference_1927_comp.jpg" width="784px"/>
 
-#### Face Colorization
+##### Face Colorization
 
 <img src="figs/gray_00.jpg" width="390px"/> <img src="figs/gray_01.jpg" width="390px"/>
 
-## News
+### News
 (2021-07-06) The training code will be released soon. Stay tuned.
 
-## Usage
+### Usage
 
 ![python](https://img.shields.io/badge/python-v3.7.4-green.svg?style=plastic)
 ![pytorch](https://img.shields.io/badge/pytorch-v1.7.0-green.svg?style=plastic)
@@ -47,10 +53,10 @@ python face_enhancement.py
 python face_colorization.py
 ```
 
-## Main idea
+### Main idea
 <img src="figs/architecture.png" width="784px"/> 
 
-## Citation
+### Citation
 If our work is useful for your research, please consider citing:
 
     @inproceedings{Yang2021GPEN,
@@ -60,11 +66,11 @@ If our work is useful for your research, please consider citing:
 	    year={2021}
     }
     
-## License
+### License
 © Alibaba, 2021. For academic and non-commercial use only.
 
-## Acknowledgments
+### Acknowledgments
 We borrow some codes from [Pytorch_Retinaface](https://github.com/biubug6/Pytorch_Retinaface) and [stylegan2-pytorch](https://github.com/rosinality/stylegan2-pytorch).
 
-## Contact
+### Contact
 If you have any questions or suggestions about this paper, feel free to reach me at yangtao9009@gmail.com.
