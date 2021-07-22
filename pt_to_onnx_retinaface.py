@@ -58,7 +58,6 @@ def parseToOnnx():
     print(conf.shape)   # torch.Size([1, 123836, 2])
     print(landms.shape) # torch.Size([1, 123836, 10])
 
-
     # Convert
     torch.onnx.export(
         facedetector.net,  # model being run
@@ -68,13 +67,16 @@ def parseToOnnx():
         opset_version=13,  # the ONNX version to export the model to
         do_constant_folding=True,  # whether to execute constant folding for optimization
         input_names=['inputs'],  # the model's input names
-        output_names=['outputs'],  # the model's output names
+        output_names=['loc','conf','landms'],  # the model's output names
         dynamic_axes={
             'inputs': {
                 0: 'batch_size'
-            },  # variable lenght axes
-            'outputs': {
-                0: 'batch_size'
+            },  'loc': {
+                    0: 'batch_size'
+            },  'conf': {
+                    0: 'batch_size'
+            },  'landms': {
+                    0: 'batch_size'
             }
         })
 
