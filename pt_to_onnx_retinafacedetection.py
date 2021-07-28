@@ -6,24 +6,18 @@ import cv2
 import glob
 import numpy as np
 
-import __init_paths
-from face_model.face_gan import FaceGAN
 from retinaface.retinaface_detection import RetinaFaceDetection
-
-from face_enhancement import FaceEnhancement
 
 def parseToOnnx():
 
     ## There are two submodels in this model: RetinaFace(facedetector) and FaceGan (facegan)
     ## Both need to be converted to ONNX files (and then used later with MIGraphX, and pre/post optimizations, to get inference example)
-    model = {'name':'GPEN-512', 'size':512}
-    
+        
     indir = 'examples/imgs'
     outdir = 'examples/outs'
     os.makedirs(outdir, exist_ok=True)
 
     facedetector = RetinaFaceDetection('./')
-    #facedetector = facedetector.load_model()
     print(facedetector)
     object_methods = [method_name for method_name in dir(facedetector)
                   if callable(getattr(facedetector, method_name))]
@@ -42,7 +36,6 @@ def parseToOnnx():
 
     # Input dimensions:
     img = np.float32(im)
-    im_height, im_width = img.shape[:2]
     scale = torch.Tensor([img.shape[1], img.shape[0], img.shape[1], img.shape[0]])
     img -= (104, 117, 123)
     img = img.transpose(2, 0, 1)
