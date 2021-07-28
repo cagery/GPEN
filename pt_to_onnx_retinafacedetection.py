@@ -5,6 +5,7 @@ import os
 import cv2
 import glob
 import numpy as np
+import __init_paths
 
 from retinaface.retinaface_detection import RetinaFaceDetection
 

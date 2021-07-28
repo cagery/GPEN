@@ -5,12 +5,9 @@ import os
 import cv2
 import glob
 import numpy as np
-
 import __init_paths
-from face_model.face_gan import FaceGAN
-from retinaface.retinaface_detection import RetinaFaceDetection
 
-from face_enhancement import FaceEnhancement
+from face_model.face_gan import FaceGAN
 
 def parseToOnnx():
 
@@ -21,14 +18,20 @@ def parseToOnnx():
     indir = 'examples/imgs'
     outdir = 'examples/outs'
     os.makedirs(outdir, exist_ok=True)
+    base_dir = './'
+    model_name = 'GPEN-512'
+    size = 512
+    channel_multiplier = 2
 
-    facedetector = RetinaFaceDetection('./')
-    #facedetector = facedetector.load_model()
-    print(facedetector)
+    facegan = FaceGAN(base_dir, size, model_name, channel_multiplier)
+
+
+    print(facegan)
     object_methods = [method_name for method_name in dir(facedetector)
                   if callable(getattr(facedetector, method_name))]
     print(object_methods)
-    print(facedetector.net)
+    
+    raise
 
     # Set eval()
     facedetector.net.eval()
