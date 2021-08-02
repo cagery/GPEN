@@ -4,7 +4,6 @@ import torch
 import os
 import cv2
 import glob
-import numpy as np
 import __init_paths
 
 from face_model.face_gan import FaceGAN
@@ -24,64 +23,46 @@ def parseToOnnx():
     channel_multiplier = 2
 
     facegan = FaceGAN(base_dir, size, model_name, channel_multiplier)
-
-
-    print(facegan)
-    object_methods = [method_name for method_name in dir(facedetector)
-                  if callable(getattr(facedetector, method_name))]
-    print(object_methods)
     
-    raise
+    object_methods = [method_name for method_name in dir(facegan)
+                  if callable(getattr(facegan, method_name))]
+    print(object_methods)
 
+    facegan_model = facegan.model
+    
     # Set eval()
-    facedetector.net.eval()
+    facegan_model.eval()
 
     # Input definition
     files = sorted(glob.glob(os.path.join(indir, '*.*g')))
     print(files[0])
     file = files[0]
     im = cv2.imread(file, cv2.IMREAD_COLOR) # BGR
-    im = cv2.resize(im, (0,0), fx=2, fy=2)
+    #img = cv2.resize(im, (size, size))
+    #img = facegan.img2tensor(img)
 
-    # Input dimensions:
-    img = np.float32(im)
-    im_height, im_width = img.shape[:2]
-    scale = torch.Tensor([img.shape[1], img.shape[0], img.shape[1], img.shape[0]])
-    img -= (104, 117, 123)
-    img = img.transpose(2, 0, 1)
-    img = torch.from_numpy(img).unsqueeze(0)
-    img = img.cuda()
-    scale = scale.cuda()
-
-    # Run forward pass and get input dimensions.
-    # loc,conf,landsm are all torch.Tensor outputs.
-    loc, conf, landms = facedetector.net(img)
-    print(img.shape)    # torch.Size([1, 3, 1136, 2656])
-    print(loc.shape)    # torch.Size([1, 123836, 4])
-    print(conf.shape)   # torch.Size([1, 123836, 2])
-    print(landms.shape) # torch.Size([1, 123836, 10])
+    img = cv2.resize(im, (size, size))
+    img_t = facegan.img2tensor(img)
+    print(f"Input Shape:\t{img_t.shape}")
+    print(f"Input Type:\t{type(img_t)}")
+    with torch.no_grad():
+        out, __ = facegan.model(img_t)
+    out = facegan.tensor2img(out)
+    print(f"Output Shape:\t{out.shape}")
+    print(f"Output Shape:\t{type(out)}")
 
     # Convert
     torch.onnx.export(
-        facedetector.net,  # model being run
-        img,  # model input (or a tuple for multiple inputs)
-        "RetinaFace.onnx",  # where to save the model (can be a file or file-like   object)
+        facegan_model,  # model being run
+        img_t,  # model input (or a tuple for multiple inputs)
+        "./FaceGAN.onnx",  # where to save the model (can be a file or file-like   object)
         export_params=True,  # store the trained parameter weights inside the model file
-        opset_version=13,  # the ONNX version to export the model to
+        verbose=False,
+        opset_version=11,  # the ONNX version to export the model to
         do_constant_folding=True,  # whether to execute constant folding for optimization
-        input_names=['inputs'],  # the model's input names
-        output_names=['loc','conf','landms'],  # the model's output names
-        dynamic_axes={
-            'inputs': {
-                0: 'batch_size'
-            },  'loc': {
-                    0: 'batch_size'
-            },  'conf': {
-                    0: 'batch_size'
-            },  'landms': {
-                    0: 'batch_size'
-            }
-        })
+        input_names=['input'],  # the model's input names
+        output_names=['output']  # the model's output names
+    )
 
 if __name__=='__main__':
     parseToOnnx()
